@@ -54,7 +54,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
             item.set_child(child=grid)
             list_box.append(item)
-        
+
         return list_box
 
     def get_stack(self):
