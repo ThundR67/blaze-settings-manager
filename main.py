@@ -26,26 +26,15 @@ class MainWindow(Gtk.ApplicationWindow):
 
         leaflet = Adw.Leaflet.new()
         leaflet.append(self.get_navigation_pane())
-
-        stack = Gtk.Stack.new()
-        leaflet.append(stack)
-
-        box_page_1 = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        stack.add_titled(child=box_page_1, name='pagina1', title='Página 1')
-
-        label_page_1 = Gtk.Label.new(str='Página 1')
-        label_page_1.set_halign(align=Gtk.Align.CENTER)
-        label_page_1.set_valign(align=Gtk.Align.CENTER)
-        label_page_1.set_hexpand(expand=True)
-        label_page_1.set_vexpand(expand=True)
-        box_page_1.append(child=label_page_1)
+        leaflet.append(self.get_stack())
 
         self.set_child(child=leaflet)
 
     def get_navigation_pane(self):
+        """Returns navigation panel widget."""
         list_box = Gtk.ListBox.new()
 
-        for panel in PANELS: 
+        for panel in PANELS:
             item = Gtk.ListBoxRow.new()
 
             grid = Gtk.Grid.new()
@@ -63,16 +52,31 @@ class MainWindow(Gtk.ApplicationWindow):
             grid.attach(icon, 0, 0, 1, 1)
             grid.attach(label, 1, 0, 1, 1)
 
-
-        item.set_child(grid)
-        list_box.append(item)
+            item.set_child(child=grid)
+            list_box.append(item)
+        
         return list_box
+
+    def get_stack(self):
+        """Returns stack widget."""
+        stack = Gtk.Stack.new()
+
+        for panel in PANELS:
+            stack.add_titled(panel.get_widget(), panel.name, panel.name)
+
+        return stack
 
 
 class Application(Adw.Application):
     """Main application class for setttins application."""
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.connect('activate', self.on_activate)
+
+    def on_activate(self, app):
+        """Callback for application activation."""
+        self.win = MainWindow(application=app)
+        self.win.present()
 
 if __name__ == '__main__':
     app = Application(application_id=random.choices(string.ascii_lowercase))
