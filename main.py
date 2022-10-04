@@ -14,12 +14,14 @@ gi.require_version(namespace='Adw', version='1')
 from gi.repository import Gio, Gtk
 from gi.repository import Adw
 
+from panels import default_apps
+
+PANELS = [default_apps.DefaultApplications()]
 
 class MainWindow(Gtk.ApplicationWindow):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.pages = [["Default Applications", "org.gnome.Settings-default-apps-symbolic"]]
 
         self.set_title(title="Settings")
         self.set_default_size(width=int(1366 / 2), height=int(768 / 2))
@@ -33,7 +35,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def get_navigation_pane(self):
         list_box = Gtk.ListBox.new()
 
-        for name, icon in self.pages: 
+        for panel in PANELS: 
             item = Gtk.ListBoxRow.new()
 
             grid = Gtk.Grid.new()
@@ -44,9 +46,9 @@ class MainWindow(Gtk.ApplicationWindow):
             grid.set_margin_end(12)
 
             label = Gtk.Label.new()
-            label.set_text(name)
+            label.set_text(panel.name)
 
-            icon = Gtk.Image.new_from_icon_name(icon)
+            icon = Gtk.Image.new_from_icon_name(panel.icon)
 
             grid.attach(icon, 0, 0, 1, 1)
             grid.attach(label, 1, 0, 1, 1)
