@@ -3,23 +3,20 @@ import random
 import string
 import sys
 
-# -*- coding: utf-8 -*-
-"""Python e GTK 4: PyGObject Adw.Flap()."""
-
 import gi
+from gi.repository import Adw, Gtk
+
+from panels import default_apps
+
 
 gi.require_version(namespace='Gtk', version='4.0')
 gi.require_version(namespace='Adw', version='1')
 
-from gi.repository import Gio, Gtk
-from gi.repository import Adw
-
-from panels import default_apps
 
 PANELS = [default_apps.DefaultApplications()]
 
 class MainWindow(Gtk.ApplicationWindow):
-
+    """Main window for settings application."""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -29,7 +26,20 @@ class MainWindow(Gtk.ApplicationWindow):
 
         leaflet = Adw.Leaflet.new()
         leaflet.append(self.get_navigation_pane())
-  
+
+        stack = Gtk.Stack.new()
+        leaflet.append(stack)
+
+        box_page_1 = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        stack.add_titled(child=box_page_1, name='pagina1', title='Página 1')
+
+        label_page_1 = Gtk.Label.new(str='Página 1')
+        label_page_1.set_halign(align=Gtk.Align.CENTER)
+        label_page_1.set_valign(align=Gtk.Align.CENTER)
+        label_page_1.set_hexpand(expand=True)
+        label_page_1.set_vexpand(expand=True)
+        box_page_1.append(child=label_page_1)
+
         self.set_child(child=leaflet)
 
     def get_navigation_pane(self):
@@ -52,30 +62,18 @@ class MainWindow(Gtk.ApplicationWindow):
 
             grid.attach(icon, 0, 0, 1, 1)
             grid.attach(label, 1, 0, 1, 1)
-        
+
 
         item.set_child(grid)
         list_box.append(item)
         return list_box
 
 
-
 class Application(Adw.Application):
-
+    """Main application class for setttins application."""
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def do_startup(self):
-        Gtk.Application.do_startup(self)
-
-    def do_activate(self):
-        win = self.props.active_window
-        if not win:
-            win = MainWindow(application=self)
-        win.present()
-
-    def do_shutdown(self):
-        Gtk.Application.do_shutdown(self)
-
-app = Application(application_id=random.choices(string.ascii_lowercase))
-app.run(sys.argv)
+if __name__ == '__main__':
+    app = Application(application_id=random.choices(string.ascii_lowercase))
+    app.run(sys.argv)
