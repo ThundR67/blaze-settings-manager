@@ -1,10 +1,10 @@
 """Panel to customize default applications."""
 import gi
-from gi.repository import Adw, Gtk
-
 
 gi.require_version(namespace='Gtk', version='4.0')
 gi.require_version(namespace='Adw', version='1')
+
+from gi.repository import Adw, Gtk
 
 
 class DefaultApplications:

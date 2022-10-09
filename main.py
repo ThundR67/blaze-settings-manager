@@ -4,14 +4,14 @@ import string
 import sys
 
 import gi
-from gi.repository import Adw, Gtk
-
-from panels import default_apps
-
 
 gi.require_version(namespace='Gtk', version='4.0')
 gi.require_version(namespace='Adw', version='1')
 
+
+from gi.repository import Adw, Gtk
+
+from panels import default_apps
 
 PANELS = [default_apps.DefaultApplications()]
 
@@ -25,7 +25,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_size_request(width=int(1366 / 2), height=int(768 / 2))
 
         leaflet = Adw.Leaflet.new()
+
         leaflet.append(self.get_navigation_pane())
+        leaflet.append(Gtk.Separator.new(orientation=Gtk.Orientation.VERTICAL))
         leaflet.append(self.get_stack())
 
         self.set_child(child=leaflet)
@@ -33,16 +35,17 @@ class MainWindow(Gtk.ApplicationWindow):
     def get_navigation_pane(self):
         """Returns navigation panel widget."""
         list_box = Gtk.ListBox.new()
+        list_box.set_css_classes(["navigation-sidebar"])
 
         for panel in PANELS:
             item = Gtk.ListBoxRow.new()
 
             grid = Gtk.Grid.new()
             grid.set_column_spacing(12)
-            grid.set_margin_top(6)
-            grid.set_margin_bottom(6)
-            grid.set_margin_start(12)
-            grid.set_margin_end(12)
+            grid.set_margin_top(12)
+            grid.set_margin_bottom(12)
+            grid.set_margin_start(6)
+            grid.set_margin_end(6)
 
             label = Gtk.Label.new()
             label.set_text(panel.name)
