@@ -15,13 +15,40 @@ class DefaultApplications:
 
     def get_widget(self):
         """Returns page widget for default application panel."""
-        box_page_2 = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        bin = Adw.Bin.new()
 
-        label_page_2 = Gtk.Label.new(str='Página 2')
-        label_page_2.set_halign(align=Gtk.Align.CENTER)
-        label_page_2.set_valign(align=Gtk.Align.CENTER)
-        label_page_2.set_hexpand(expand=True)
-        label_page_2.set_vexpand(expand=True)
-        box_page_2.append(child=label_page_2)
+        box = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        box.set_hexpand(True)
+        box.set_vexpand(True)
+        box.set_halign(Gtk.Align.CENTER)
+        box.set_valign(Gtk.Align.START)
+        box.set_margin_top(32)
+        box.set_margin_bottom(32)
+        box.set_margin_start(24)
+        box.set_margin_end(24)
 
-        return box_page_2
+        grid = Gtk.Grid.new()
+        grid.set_column_spacing(12)
+        grid.set_valign(Gtk.Align.FILL)
+        grid.set_halign(Gtk.Align.FILL)
+
+        label = Gtk.Label.new("Web")
+        label.set_css_classes(["dim-label"])
+
+
+
+        app_chooser = Gtk.AppChooserButton.new(content_type="x-scheme-handler/http")
+
+
+
+        
+
+
+        grid.attach(label, 0, 0, 1, 1)
+        grid.attach_next_to(app_chooser, label, Gtk.PositionType.RIGHT, 1, 1)
+
+
+        box.append(grid)
+        bin.set_child(box)
+
+        return bin
