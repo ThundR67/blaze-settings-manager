@@ -7,6 +7,15 @@ gi.require_version(namespace='Adw', version='1')
 from gi.repository import Adw, Gtk
 
 
+LABELS = {
+    "Web": "x-scheme-handler/http",
+    "Mail": "x-scheme-handler/mailto",
+    "Calendar": "text/calendar",
+    "Music": "audio/x-vorbis+ogg",
+    "Videos": "video/x-ogm+ogg",
+    "Photos": "image/jpeg",
+}
+
 class DefaultApplications:
     """Panel to customize default applications."""
     def __init__(self):
@@ -15,7 +24,7 @@ class DefaultApplications:
 
     def get_widget(self):
         """Returns page widget for default application panel."""
-        bin = Adw.Bin.new()
+        adw_bin = Adw.Bin.new()
 
         box = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         box.set_hexpand(True)
@@ -29,26 +38,22 @@ class DefaultApplications:
 
         grid = Gtk.Grid.new()
         grid.set_column_spacing(12)
+        grid.set_row_spacing(12)
         grid.set_valign(Gtk.Align.FILL)
         grid.set_halign(Gtk.Align.FILL)
 
-        label = Gtk.Label.new("Web")
-        label.set_css_classes(["dim-label"])
 
+        for index, (label_name, mime_type) in enumerate(LABELS.items()):
+            label = Gtk.Label.new(label_name)
+            label.set_css_classes(["dim-label"])
 
-
-        app_chooser = Gtk.AppChooserButton.new(content_type="x-scheme-handler/http")
-
-
-
-        
-
-
-        grid.attach(label, 0, 0, 1, 1)
-        grid.attach_next_to(app_chooser, label, Gtk.PositionType.RIGHT, 1, 1)
+            app_chooser = Gtk.AppChooserButton.new(content_type=mime_type)
+            
+            grid.attach(label, 0, index, 1, 1)
+            grid.attach_next_to(app_chooser, label, Gtk.PositionType.RIGHT, 1, 1)
 
 
         box.append(grid)
-        bin.set_child(box)
+        adw_bin.set_child(box)
 
-        return bin
+        return adw_bin
