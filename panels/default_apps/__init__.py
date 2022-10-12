@@ -50,9 +50,9 @@ class DefaultApplications:
 
             app_chooser = Gtk.AppChooserButton.new(content_type=mime_type)
             app_chooser.set_show_default_item(True)
-            
+
             app_chooser.connect("changed", self.on_app_chooser_changed)
-            
+
             grid.attach(label, 0, index, 1, 1)
             grid.attach_next_to(app_chooser, label, Gtk.PositionType.RIGHT, 1, 1)
 

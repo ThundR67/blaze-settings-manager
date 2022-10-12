@@ -35,7 +35,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         leaflet.append(self.get_navigation_pane())
         leaflet.append(Gtk.Separator.new(orientation=Gtk.Orientation.VERTICAL))
-        
+
         box = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         box.set_hexpand(True)
         box.set_vexpand(True)
