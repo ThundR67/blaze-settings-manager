@@ -23,8 +23,6 @@ class DefaultApplications:
         self.name = "Default Applications"
         self.icon = "org.gnome.Settings-default-apps-symbolic"
 
-    def load_widget(self):
-        """Loads widget for default application panel."""
         self.widget = Adw.Bin.new()
 
         box = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=12)

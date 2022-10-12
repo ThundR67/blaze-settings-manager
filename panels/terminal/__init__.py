@@ -14,8 +14,6 @@ class Terminal:
         self.name = "Terminal"
         self.icon = "org.gnome.Settings-wacom-symbolic"
 
-    def load_widget(self):
-        """Loads widget for panel."""
         self.widget = Adw.Bin.new()
 
         box = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=12)

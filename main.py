@@ -23,9 +23,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.load_panels()
         self.load_stack()
-
 
         self.set_title(title="Settings")
         self.set_default_size(width=int(1366 / 2), height=int(768 / 2))
