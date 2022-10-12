@@ -23,9 +23,9 @@ class DefaultApplications:
         self.name = "Default Applications"
         self.icon = "org.gnome.Settings-default-apps-symbolic"
 
-    def get_widget(self):
-        """Returns page widget for default application panel."""
-        adw_bin = Adw.Bin.new()
+    def load_widget(self):
+        """Loads widget for default application panel."""
+        self.widget = Adw.Bin.new()
 
         box = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         box.set_hexpand(True)
@@ -58,9 +58,8 @@ class DefaultApplications:
 
 
         box.append(grid)
-        adw_bin.set_child(box)
 
-        return adw_bin
+        self.widget.set_child(box)
 
     def on_app_chooser_changed(self, widget):
         """Callback for when app chooser is changed."""

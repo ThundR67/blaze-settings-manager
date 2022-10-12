@@ -11,14 +11,21 @@ gi.require_version(namespace='Adw', version='1')
 
 from gi.repository import Adw, Gtk
 
-from panels import default_apps
+from panels import default_apps, terminal
 
-PANELS = [default_apps.DefaultApplications()]
+PANELS = [
+    default_apps.DefaultApplications(),
+    terminal.Terminal()
+]
 
 class MainWindow(Gtk.ApplicationWindow):
     """Main window for settings application."""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+        self.load_panels()
+        self.load_stack()
+
 
         self.set_title(title="Settings")
         self.set_default_size(width=int(1366 / 2), height=int(768 / 2))
@@ -28,17 +35,31 @@ class MainWindow(Gtk.ApplicationWindow):
 
         leaflet.append(self.get_navigation_pane())
         leaflet.append(Gtk.Separator.new(orientation=Gtk.Orientation.VERTICAL))
-        leaflet.append(self.get_stack())
+        
+        box = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        box.set_hexpand(True)
+        box.set_vexpand(True)
+        box.append(self.stack)
+
+        leaflet.append(box)
 
         self.set_child(child=leaflet)
+
+    def load_panels(self):
+        """Loads all the panels."""
+        for panel in PANELS:
+            panel.load_widget()
 
     def get_navigation_pane(self):
         """Returns navigation panel widget."""
         list_box = Gtk.ListBox.new()
         list_box.set_css_classes(["navigation-sidebar"])
+        list_box.connect("row-activated", self.on_list_box_row_activated)
 
         for panel in PANELS:
             item = Gtk.ListBoxRow.new()
+            item.set_name(panel.name)
+
 
             grid = Gtk.Grid.new()
             grid.set_column_spacing(12)
@@ -56,19 +77,27 @@ class MainWindow(Gtk.ApplicationWindow):
             grid.attach(label, 1, 0, 1, 1)
 
             item.set_child(child=grid)
+            item.set_activatable(True)
+            item.set_selectable(True)
+
             list_box.append(item)
 
         return list_box
 
-    def get_stack(self):
-        """Returns stack widget."""
-        stack = Gtk.Stack.new()
+    def load_stack(self):
+        """Loads stack widget."""
+        self.stack = Gtk.Stack.new()
+
+        self.stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
 
         for panel in PANELS:
-            stack.add_titled(panel.get_widget(), panel.name, panel.name)
+            self.stack.add_named(panel.widget, panel.name)
 
-        return stack
-
+    def on_list_box_row_activated(self, _, row):
+        """Handles list box row activation."""
+        name = row.get_name()
+        self.stack.get_child_by_name(name).show()
+        self.stack.set_visible_child_name(name)
 
 class Application(Adw.Application):
     """Main application class for setttins application."""
