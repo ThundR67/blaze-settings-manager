@@ -17,6 +17,7 @@ from panels import default_apps, terminal
 CONFIG = Config()
 PANELS = [
     terminal.Terminal(CONFIG),
+    default_apps.DefaultApplications(),
 ]
 
 class MainWindow(Gtk.ApplicationWindow):

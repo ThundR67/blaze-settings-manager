@@ -27,22 +27,13 @@ class Terminal:
 
         self.widget = Adw.Bin.new()
 
-        box = Gtk.Box.new(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-        box.set_hexpand(True)
-        box.set_vexpand(True)
-        box.set_margin_top(32)
-        box.set_margin_bottom(32)
-        box.set_margin_start(24)
-        box.set_margin_end(24)
-
         preferences_page = Adw.PreferencesPage.new()
         preferences_page.set_title("Terminal")
         preferences_page.set_icon_name("org.gnome.Settings-wacom-symbolic")
 
         preferences_page.add(self.get_text_group())
 
-        box.append(preferences_page)
-        self.widget.set_child(box)
+        self.widget.set_child(preferences_page)
 
     def get_text_group(self):
         """Return the text group."""
@@ -99,8 +90,6 @@ class Terminal:
         confirm_window_close_switch.connect("notify::active", self.on_confirm_window_close_switch_active)
 
         confirm_window_close_action_row.add_suffix(confirm_window_close_switch)
-
-
 
         group.add(font_action_row)
         group.add(cursor_shape_combo_row)
