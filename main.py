@@ -11,11 +11,12 @@ gi.require_version(namespace='Adw', version='1')
 
 from gi.repository import Adw, Gtk
 
+from config import Config
 from panels import default_apps, terminal
 
+CONFIG = Config()
 PANELS = [
-    default_apps.DefaultApplications(),
-    terminal.Terminal()
+    terminal.Terminal(CONFIG),
 ]
 
 class MainWindow(Gtk.ApplicationWindow):
@@ -42,11 +43,6 @@ class MainWindow(Gtk.ApplicationWindow):
         leaflet.append(box)
 
         self.set_child(child=leaflet)
-
-    def load_panels(self):
-        """Loads all the panels."""
-        for panel in PANELS:
-            panel.load_widget()
 
     def get_navigation_pane(self):
         """Returns navigation panel widget."""
