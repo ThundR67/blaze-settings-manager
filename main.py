@@ -12,10 +12,12 @@ gi.require_version(namespace='Adw', version='1')
 from gi.repository import Adw, Gtk
 
 from config import Config
-from panels import default_apps, terminal
+from panels import default_apps, terminal, mouse_and_touchpad, about
 
 CONFIG = Config()
 PANELS = [
+    about.About(),
+    mouse_and_touchpad.MouseAndTouchpad(CONFIG),
     terminal.Terminal(CONFIG),
     default_apps.DefaultApplications(),
 ]
