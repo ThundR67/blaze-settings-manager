@@ -3,16 +3,16 @@ import random
 import string
 import sys
 
+from config import Config
+from panels import default_apps, terminal, mouse_and_touchpad, about
+
 import gi
 
 gi.require_version(namespace='Gtk', version='4.0')
 gi.require_version(namespace='Adw', version='1')
 
-
 from gi.repository import Adw, Gtk
 
-from config import Config
-from panels import default_apps, terminal, mouse_and_touchpad, about
 
 CONFIG = Config()
 PANELS = [
