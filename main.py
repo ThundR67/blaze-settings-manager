@@ -19,7 +19,7 @@ PANELS = [
     about.About(),
     mouse_and_touchpad.MouseAndTouchpad(CONFIG),
     terminal.Terminal(CONFIG),
-    default_apps.DefaultApplications(),
+    default_apps.DefaultApplicationsView(),
 ]
 
 class MainWindow(Gtk.ApplicationWindow):

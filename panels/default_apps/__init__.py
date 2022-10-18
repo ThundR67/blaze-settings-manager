@@ -7,19 +7,13 @@ gi.require_version(namespace='Adw', version='1')
 
 from gi.repository import Adw, Gtk
 
+from .controller import DefaultApplicationsController
 
-LABELS = {
-    "x-scheme-handler/http": ["Web", ["text/html", "application/xhtml+xml", "x-scheme-handler/https"]],
-    "x-scheme-handler/mailto": ["Mail", []],
-    "text/calendar": ["Calendar", []],
-    "audio/x-vorbis+ogg": ["Music", ["audio/"]],
-    "video/x-ogm+ogg": ["Videos", ["video/"]],
-    "image/jpeg": ["Photos", ["image/"]],
-}
 
-class DefaultApplications:
+class DefaultApplicationsView:
     """Panel to customize default applications."""
-    def __init__(self):
+    def __init__(self, controller=DefaultApplicationsController()):
+        self.controller = controller
         self.name = "Default Applications"
         self.icon = "org.gnome.Settings-default-apps-symbolic"
 
@@ -42,7 +36,7 @@ class DefaultApplications:
         grid.set_halign(Gtk.Align.FILL)
 
 
-        for index, (mime_type, mime_info) in enumerate(LABELS.items()):
+        for index, (mime_type, mime_info) in enumerate(self.controller.labels.items()):
             label = Gtk.Label.new(mime_info[0])
             label.set_css_classes(["dim-label"])
 
@@ -65,7 +59,7 @@ class DefaultApplications:
         mime_type = widget.get_content_type()
         info.set_as_default_for_type(mime_type)
 
-        for extra_types in LABELS[mime_type][1]:
+        for extra_types in self.controller.labels[mime_type][1]:
             for supported_type in info.get_supported_types():
                 if supported_type.startswith(extra_types):
                     info.set_as_default_for_type(supported_type)

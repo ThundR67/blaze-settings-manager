@@ -79,6 +79,7 @@ class About:
             toggle_button.set_active(False)
             return
 
+
         self.widget.get_child().add_toast(self.toast)
 
 
