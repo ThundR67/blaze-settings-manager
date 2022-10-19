@@ -16,7 +16,7 @@ from gi.repository import Adw, Gtk
 
 CONFIG = Config()
 PANELS = [
-    about.About(),
+    about.AboutView(),
     mouse_and_touchpad.MouseAndTouchpad(CONFIG),
     terminal.Terminal(CONFIG),
     default_apps.DefaultApplicationsView(),
@@ -104,8 +104,8 @@ class Application(Adw.Application):
 
     def on_activate(self, app):
         """Callback for application activation."""
-        self.win = MainWindow(application=app)
-        self.win.present()
+        window = MainWindow(application=app)
+        window.present()
 
 if __name__ == '__main__':
     app = Application(application_id=random.choices(string.ascii_lowercase))
