@@ -18,7 +18,7 @@ CONFIG = Config()
 PANELS = [
     about.AboutView(),
     mouse_and_touchpad.MouseAndTouchpad(CONFIG),
-    terminal.Terminal(CONFIG),
+    terminal.Terminal(),
     default_apps.DefaultApplicationsView(),
 ]
 
