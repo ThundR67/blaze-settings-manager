@@ -7,12 +7,12 @@ gi.require_version(namespace='Adw', version='1')
 
 from gi.repository import Adw, Gtk
 
-from .controller import DefaultApplicationsController
+from .controller import Controller
 
 
 class DefaultApplicationsView:
     """Panel to customize default applications."""
-    def __init__(self, controller=DefaultApplicationsController()):
+    def __init__(self, controller=Controller()):
         self.controller = controller
         self.name = "Default Applications"
         self.icon = "org.gnome.Settings-default-apps-symbolic"
@@ -36,7 +36,7 @@ class DefaultApplicationsView:
         grid.set_halign(Gtk.Align.FILL)
 
 
-        for index, (mime_type, mime_info) in enumerate(self.controller.labels.items()):
+        for index, (mime_type, mime_info) in enumerate(self.controller.model.labels.items()):
             label = Gtk.Label.new(mime_info[0])
             label.set_css_classes(["dim-label"])
 
@@ -55,11 +55,6 @@ class DefaultApplicationsView:
 
     def on_app_chooser_changed(self, widget):
         """Callback for when app chooser is changed."""
-        info = widget.get_app_info()
+        app_info = widget.get_app_info()
         mime_type = widget.get_content_type()
-        info.set_as_default_for_type(mime_type)
-
-        for extra_types in self.controller.labels[mime_type][1]:
-            for supported_type in info.get_supported_types():
-                if supported_type.startswith(extra_types):
-                    info.set_as_default_for_type(supported_type)
+        self.controller.set_default_app(app_info, mime_type)

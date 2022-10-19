@@ -1,30 +1,21 @@
 """Controller for the default apps panel."""
 
-class DefaultApplicationsController:
+from .model import Model
+
+class Controller:
     """Controller for the default apps panel."""
-    def __init__(self):
-        self.labels = {
-            "x-scheme-handler/http":
-                ["Web", ["text/html", "application/xhtml+xml", "x-scheme-handler/https"]],
-            "x-scheme-handler/mailto": ["Mail", []],
-            "text/calendar": ["Calendar", []],
-            "audio/x-vorbis+ogg": ["Music", ["audio/"]],
-            "video/x-ogm+ogg": ["Videos", ["video/"]],
-            "image/jpeg": ["Photos", ["image/"]],
-        }
+    def __init__(self, model=Model()):
+        self.model = model
 
-    def on_app_chooser_changed(self, widget):
+    def set_default_app(self, app_info, mimetype):
         """
-        Callback for when app chooser is changed.
-        Changes to the choosen app for the main mime type.
-        Also changes to the choosen app for the secondary mime types, if supported by the app.
+        Sets the default application of @mimetype to @app_info.
+        Also, sets @app_info as the default application for allsecondary mimetypes,
+        if supported by @app_info.
         """
-        info = widget.get_app_info()
-        mime_type = widget.get_content_type()
+        app_info.set_as_default_for_type(mimetype)
 
-        info.set_as_default_for_type(mime_type)
-
-        for extra_types in self.labels[mime_type][1]:
-            for supported_type in info.get_supported_types():
+        for extra_types in self.model.labels[mimetype][1]:
+            for supported_type in app_info.get_supported_types():
                 if supported_type.startswith(extra_types):
-                    info.set_as_default_for_type(supported_type)
+                    app_info.set_as_default_for_type(supported_type)
