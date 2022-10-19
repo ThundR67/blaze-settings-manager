@@ -1,4 +1,6 @@
 """Panel to customize default applications."""
+from .controller import Controller
+
 from dataclasses import dataclass
 import gi
 
@@ -6,8 +8,6 @@ gi.require_version(namespace='Gtk', version='4.0')
 gi.require_version(namespace='Adw', version='1')
 
 from gi.repository import Adw, Gtk
-
-from .controller import Controller
 
 
 class DefaultApplicationsView:
