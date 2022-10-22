@@ -11,7 +11,7 @@ from gi.repository import Adw, Gtk
 class MouseAndTouchpad:
     """Panel to customize mouse and touchpad settings."""
     def __init__(self, controller=Controller()):
-        self.controller = Controller()
+        self.controller = controller
 
         self.name = "Mouse and Touchpad"
         self.icon = "org.gnome.Settings-mouse-symbolic"
