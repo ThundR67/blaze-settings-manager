@@ -17,7 +17,7 @@ from gi.repository import Adw, Gtk
 CONFIG = Config()
 PANELS = [
     about.AboutView(),
-    mouse_and_touchpad.MouseAndTouchpad(CONFIG),
+    mouse_and_touchpad.MouseAndTouchpad(),
     terminal.Terminal(),
     default_apps.DefaultApplicationsView(),
 ]

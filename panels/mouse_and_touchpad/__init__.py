@@ -1,4 +1,6 @@
 """Panel to customize mouse and touchpad settings."""
+from .controller import Controller
+
 import gi
 
 gi.require_version(namespace='Gtk', version='4.0')
@@ -6,23 +8,10 @@ gi.require_version(namespace='Adw', version='1')
 
 from gi.repository import Adw, Gtk
 
-_PRIMARY_BUTTON_CONFIG = "desktop.general.primary_button"
-
-_MOUSE_SPPEED_CONFIG = "desktop.mouse.speed"
-_MOUSE_NATURAL_SCROLLING_CONFIG = "desktop.mouse.natural_scrolling"
-
-_TOUCHPAD_ENABLED_CONFIG = "desktop.touchpad.enabled"
-_TOUCHPAD_EDGE_SCROLLING_CONFIG = "desktop.touchpad.edge_scrolling"
-_TOUCHPAD_NATURAL_SCROLLING_CONFIG = "desktop.touchpad.natural_scrolling"
-_TOUCHPAD_TAP_TO_CLICK_CONFIG = "desktop.touchpad.tap_to_click"
-_TOUCHPAD_SPEED_CONFIG = "desktop.touchpad.speed"
-_TOUCHPAD_TWO_FINGER_SCROLLING_CONFIG = "desktop.touchpad.two_finger_scrolling"
-
-_PRIMARY_BUTTONS = ["left", "right"]
-
 class MouseAndTouchpad:
-    def __init__(self, config):
-        self.config = config
+    """Panel to customize mouse and touchpad settings."""
+    def __init__(self, controller=Controller()):
+        self.controller = Controller()
 
         self.name = "Mouse and Touchpad"
         self.icon = "org.gnome.Settings-mouse-symbolic"
@@ -30,7 +19,6 @@ class MouseAndTouchpad:
         self.widget = Adw.Bin.new()
 
         preferences_page = Adw.PreferencesPage.new()
-
 
         preferences_page.add(self.get_general_group())
         preferences_page.add(self.get_mouse_group())
@@ -47,17 +35,17 @@ class MouseAndTouchpad:
         primary_button_combo_row = Adw.ComboRow.new()
         primary_button_combo_row.set_title("Primary button")
         primary_button_combo_row.set_subtitle(
-            "Sets the order of physical button on mice and touchpads."
-        )
+            "Sets the order of physical button on mice and touchpads.")
 
         primary_button_model = Gtk.StringList.new([
-            i.capitalize() for i in _PRIMARY_BUTTONS]
+            i.capitalize() for i in self.controller.primary_buttons]
         )
 
         primary_button_combo_row.set_model(primary_button_model)
 
-        current_primary_button = self.config.get(_PRIMARY_BUTTON_CONFIG)
-        primary_button_combo_row.set_selected(_PRIMARY_BUTTONS.index(current_primary_button))
+        current_primary_button = self.controller.get_primary_button()
+        primary_button_combo_row.set_selected(
+            self.controller.primary_buttons.index(current_primary_button))
 
         primary_button_combo_row.connect("notify::selected", self.on_primary_button_combo_row_selected)
 
@@ -68,8 +56,7 @@ class MouseAndTouchpad:
     def on_primary_button_combo_row_selected(self, widget, _):
         """Handle primary button selection."""
         selected = widget.get_selected_item().get_string().lower()
-        self.config.set(_PRIMARY_BUTTON_CONFIG, selected)
-        self.config.save()
+        self.controller.set_primary_button(selected)
 
     def get_mouse_group(self):
         """Return the mouse group."""
@@ -85,7 +72,7 @@ class MouseAndTouchpad:
         mouse_speed_scale.set_hexpand(True)
         mouse_speed_scale.set_vexpand(True)
 
-        mouse_speed_scale.set_value(self.config.get(_MOUSE_SPPEED_CONFIG))
+        mouse_speed_scale.set_value(self.controller.get_mouse_speed())
         mouse_speed_scale.connect("value-changed", self.on_mouse_speed_scale_value_changed)
 
         mouse_speed_row.add_suffix(mouse_speed_scale)
@@ -99,7 +86,7 @@ class MouseAndTouchpad:
         natural_scrolling_switch = Gtk.Switch.new()
         natural_scrolling_switch.set_valign(Gtk.Align.CENTER)
 
-        natural_scrolling_switch.set_active(self.config.get(_MOUSE_NATURAL_SCROLLING_CONFIG))
+        natural_scrolling_switch.set_active(self.controller.get_mouse_natural_scrolling())
         natural_scrolling_switch.connect("notify::active", self.on_mouse_natural_scrolling_switch_active)
 
         natural_scrolling_row.add_suffix(natural_scrolling_switch)
@@ -111,13 +98,11 @@ class MouseAndTouchpad:
 
     def on_mouse_speed_scale_value_changed(self, widget):
         """Handle mouse speed change."""
-        self.config.set(_MOUSE_SPPEED_CONFIG, int(widget.get_value()))
-        self.config.save()
+        self.controller.set_mouse_speed(int(widget.get_value()))
 
     def on_mouse_natural_scrolling_switch_active(self, widget, _):
         """Handle mouse natural scrolling change."""
-        self.config.set(_MOUSE_NATURAL_SCROLLING_CONFIG, widget.get_active())
-        self.config.save()
+        self.controller.set_mouse_natural_scrolling(widget.get_active())
 
     def get_touchpad_group(self):
         """Return the touchpad group."""
@@ -132,7 +117,7 @@ class MouseAndTouchpad:
         touchpad_enabled_switch = Gtk.Switch.new()
         touchpad_enabled_switch.set_valign(Gtk.Align.CENTER)
 
-        touchpad_enabled_switch.set_active(self.config.get(_TOUCHPAD_ENABLED_CONFIG))
+        touchpad_enabled_switch.set_active(self.controller.get_touchpad_enabled())
         touchpad_enabled_switch.connect("notify::active", self.on_touchpad_enabled_switch_active)
 
         touchpad_enabled_row.add_suffix(touchpad_enabled_switch)
@@ -146,7 +131,7 @@ class MouseAndTouchpad:
         touchpad_speed_scale.set_hexpand(True)
         touchpad_speed_scale.set_vexpand(True)
 
-        touchpad_speed_scale.set_value(self.config.get(_TOUCHPAD_SPEED_CONFIG))
+        touchpad_speed_scale.set_value(self.controller.get_touchpad_speed())
         touchpad_speed_scale.connect("value-changed", self.on_touchpad_speed_scale_value_changed)
 
         touchpad_speed_row.add_suffix(touchpad_speed_scale)
@@ -159,7 +144,7 @@ class MouseAndTouchpad:
         natural_scrolling_switch = Gtk.Switch.new()
         natural_scrolling_switch.set_valign(Gtk.Align.CENTER)
 
-        natural_scrolling_switch.set_active(self.config.get(_TOUCHPAD_NATURAL_SCROLLING_CONFIG))
+        natural_scrolling_switch.set_active(self.controller.get_touchpad_natural_scrolling())
         natural_scrolling_switch.connect("notify::active", self.on_touchpad_natural_scrolling_switch_active)
 
         natural_scrolling_row.add_suffix(natural_scrolling_switch)
@@ -171,7 +156,7 @@ class MouseAndTouchpad:
         tap_to_click_switch = Gtk.Switch.new()
         tap_to_click_switch.set_valign(Gtk.Align.CENTER)
 
-        tap_to_click_switch.set_active(self.config.get(_TOUCHPAD_TAP_TO_CLICK_CONFIG))
+        tap_to_click_switch.set_active(self.controller.get_touchpad_tap_to_click())
         tap_to_click_switch.connect("notify::active", self.on_touchpad_tap_to_click_switch_active)
 
         tap_to_click_row.add_suffix(tap_to_click_switch)
@@ -183,7 +168,7 @@ class MouseAndTouchpad:
         two_finger_scrolling_switch = Gtk.Switch.new()
         two_finger_scrolling_switch.set_valign(Gtk.Align.CENTER)
 
-        two_finger_scrolling_switch.set_active(self.config.get(_TOUCHPAD_TWO_FINGER_SCROLLING_CONFIG))
+        two_finger_scrolling_switch.set_active(self.controller.get_touchpad_two_finger_scrolling())
         two_finger_scrolling_switch.connect("notify::active", self.on_touchpad_two_finger_scrolling_switch_active)
 
         two_finger_scrolling_row.add_suffix(two_finger_scrolling_switch)
@@ -195,7 +180,7 @@ class MouseAndTouchpad:
         edge_scrolling_switch = Gtk.Switch.new()
         edge_scrolling_switch.set_valign(Gtk.Align.CENTER)
 
-        edge_scrolling_switch.set_active(self.config.get(_TOUCHPAD_EDGE_SCROLLING_CONFIG))
+        edge_scrolling_switch.set_active(self.controller.get_touchpad_edge_scrolling())
         edge_scrolling_switch.connect("notify::active", self.on_touchpad_edge_scrolling_switch_active)
 
         edge_scrolling_row.add_suffix(edge_scrolling_switch)
@@ -211,30 +196,24 @@ class MouseAndTouchpad:
 
     def on_touchpad_enabled_switch_active(self, widget, _):
         """Handle touchpad enabled change."""
-        self.config.set(_TOUCHPAD_ENABLED_CONFIG, widget.get_active())
-        self.config.save()
+        self.controller.set_touchpad_enabled(widget.get_active())
 
     def on_touchpad_speed_scale_value_changed(self, widget):
         """Handle touchpad speed change."""
-        self.config.set(_TOUCHPAD_SPEED_CONFIG, int(widget.get_value()))
-        self.config.save()
+        self.controller.set_touchpad_speed(int(widget.get_value()))
 
     def on_touchpad_natural_scrolling_switch_active(self, widget, _):
         """Handle touchpad natural scrolling change."""
-        self.config.set(_TOUCHPAD_NATURAL_SCROLLING_CONFIG, widget.get_active())
-        self.config.save()
+        self.controller.set_touchpad_natural_scrolling(widget.get_active())
 
     def on_touchpad_tap_to_click_switch_active(self, widget, _):
         """Handle touchpad tap to click change."""
-        self.config.set(_TOUCHPAD_TAP_TO_CLICK_CONFIG, widget.get_active())
-        self.config.save()
+        self.controller.set_touchpad_tap_to_click(widget.get_active())
 
     def on_touchpad_two_finger_scrolling_switch_active(self, widget, _):
         """Handle touchpad two finger scrolling change."""
-        self.config.set(_TOUCHPAD_TWO_FINGER_SCROLLING_CONFIG, widget.get_active())
-        self.config.save()
+        self.controller.set_touchpad_two_finger_scrolling(widget.get_active())
 
     def on_touchpad_edge_scrolling_switch_active(self, widget, _):
         """Handle touchpad edge scrolling change."""
-        self.config.set(_TOUCHPAD_EDGE_SCROLLING_CONFIG, widget.get_active())
-        self.config.save()
+        self.controller.set_touchpad_edge_scrolling(widget.get_active())
