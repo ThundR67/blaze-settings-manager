@@ -68,4 +68,3 @@ class Terminal:
         group.add(confirm_selector.get_widget())
 
         return group
-
