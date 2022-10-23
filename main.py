@@ -3,7 +3,6 @@ import random
 import string
 import sys
 
-from config import Config
 from panels import default_apps, terminal, mouse_and_touchpad, about
 
 import gi
@@ -13,8 +12,6 @@ gi.require_version(namespace='Adw', version='1')
 
 from gi.repository import Adw, Gtk
 
-
-CONFIG = Config()
 PANELS = [
     about.AboutView(),
     mouse_and_touchpad.MouseAndTouchpad(),
