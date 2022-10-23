@@ -21,13 +21,30 @@ class MouseAndTouchpad:
 
         page = Adw.PreferencesPage.new()
 
-        #page.add(self.get_general_group())
+        page.add(self.get_general_group())
         page.add(self.get_mouse_group())
         page.add(self.get_touchpad_group())
 
         self.widget.set_child(page)
 
+    def get_general_group(self):
+        """Return the general group."""
+        group = Adw.PreferencesGroup.new()
+        group.set_title("General")
 
+        # Primary button selector.
+        primary_button_selector = preference.Preference(
+            preference.PreferenceType.DROPDOWN,
+            "Primary button",
+            constants.PRIMARY_BUTTON_PATH,
+            self.config,
+            values=constants.PRIMARY_BUTTONS,
+            subtitle="Sets the order of physical buttons on mice and touchpads.",
+        )
+
+        group.add(primary_button_selector.get_widget())
+
+        return group
 
     def get_mouse_group(self):
         """Return the mouse group."""
@@ -116,36 +133,3 @@ class MouseAndTouchpad:
         group.add(edge_scrolling_selector.get_widget())
 
         return group
-
-
-"""
-    def get_general_group(self):
-        group = Adw.PreferencesGroup.new()
-        group.set_title("General")
-
-        # Primary button selector.
-        primary_button_combo_row = Adw.ComboRow.new()
-        primary_button_combo_row.set_title("Primary button")
-        primary_button_combo_row.set_subtitle(
-            "Sets the order of physical button on mice and touchpads.")
-
-        primary_button_model = Gtk.StringList.new([
-            i.capitalize() for i in self.controller.primary_buttons]
-        )
-
-        primary_button_combo_row.set_model(primary_button_model)
-
-        current_primary_button = self.controller.get_primary_button()
-        primary_button_combo_row.set_selected(
-            self.controller.primary_buttons.index(current_primary_button))
-
-        primary_button_combo_row.connect("notify::selected", self.on_primary_button_combo_row_selected)
-
-        group.add(primary_button_combo_row)
-
-        return group
-
-    def on_primary_button_combo_row_selected(self, widget, _):
-        selected = widget.get_selected_item().get_string().lower()
-        self.controller.set_primary_button(selected)
-"""
