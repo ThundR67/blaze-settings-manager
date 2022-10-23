@@ -32,7 +32,7 @@ class Preference:
         if self.preference_type == PreferenceType.SWITCH:
             value = widget.get_active()
         elif self.preference_type == PreferenceType.SLIDER:
-            value = widget.get_value()
+            value = int(widget.get_value())
         elif self.preference_type == PreferenceType.DROPDOWN:
             value = self.values[widget.get_selected()]
         elif self.preference_type == PreferenceType.FONT:
@@ -66,7 +66,10 @@ class Preference:
             widget.set_active(self.config.get(self.path))
 
         elif self.preference_type == PreferenceType.SLIDER:
-            widget = self._base(Gtk.Scale.new_with_range(0, 100, 1), "value-changed")
+            widget = Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL, 0, 100, 1)
+            widget = self._base(widget, "value-changed")
+            widget.set_hexpand(True)
+            widget.set_vexpand(True)
             widget.set_value(self.config.get(self.path))
 
         elif self.preference_type == PreferenceType.DROPDOWN:
