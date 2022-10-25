@@ -6,7 +6,7 @@ import gi
 gi.require_version(namespace='Gtk', version='4.0')
 gi.require_version(namespace='Adw', version='1')
 
-from gi.repository import Adw, Gtk
+from gi.repository import Adw, Gtk, Gdk
 
 class PreferenceType(Enum):
     """Preference types."""
@@ -15,6 +15,7 @@ class PreferenceType(Enum):
     DROPDOWN = 2
     FONT = 3
     ENTRY = 4
+    COLOR = 5
 
 class Preference:
     """Helper class to create preferences for panels."""
@@ -40,6 +41,8 @@ class Preference:
             font_size = int(font.split(" ")[-1])
             font_name = " ".join(font.split(" ")[:-1])
             value = (font_name, font_size)
+        elif self.preference_type == PreferenceType.COLOR:
+            value = widget.get_rgba().to_string()
 
         self.config.set(self.path, value)
         self.config.save()
@@ -84,6 +87,13 @@ class Preference:
             widget = Gtk.FontButton.new_with_font(f"{font_name} {font_size}")
             widget = self._base(widget, "font-set")
             widget.set_font(f"{font_name} {font_size}")
+
+        elif self.preference_type == PreferenceType.COLOR:
+            widget = self._base(Gtk.ColorButton.new(), "color-set")
+            color = self.config.get(self.path)
+            rbga = Gdk.RGBA()
+            rbga.parse(color)
+            widget.set_rgba(rbga)
 
         row.add_suffix(widget)
 

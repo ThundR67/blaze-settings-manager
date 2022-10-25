@@ -13,9 +13,9 @@ gi.require_version(namespace='Adw', version='1')
 from gi.repository import Adw, Gtk
 
 PANELS = [
+    terminal.Terminal(),
     about.AboutView(),
     mouse_and_touchpad.MouseAndTouchpad(),
-    terminal.Terminal(),
     default_apps.DefaultApplicationsView(),
 ]
 
@@ -27,8 +27,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.load_stack()
 
         self.set_title(title="Settings")
-        self.set_default_size(width=int(1366 / 2), height=int(768 / 2))
-        self.set_size_request(width=int(1366 / 2), height=int(768 / 2))
+        self.set_default_size(width=int(2000 / 2), height=int(1000 / 2))
+        self.set_size_request(width=int(2000 / 2), height=int(1000 / 2))
 
         leaflet = Adw.Leaflet.new()
 
