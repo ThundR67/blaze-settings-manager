@@ -3,7 +3,7 @@ import random
 import string
 import sys
 
-from panels import default_apps, terminal, mouse_and_touchpad, about
+from panels import default_apps, terminal, mouse_and_touchpad, about, appearance
 
 import gi
 
@@ -12,17 +12,20 @@ gi.require_version(namespace='Adw', version='1')
 
 from gi.repository import Adw, Gtk
 
-PANELS = [
-    terminal.Terminal(),
-    about.AboutView(),
-    mouse_and_touchpad.MouseAndTouchpad(),
-    default_apps.DefaultApplicationsView(),
-]
+
 
 class MainWindow(Gtk.ApplicationWindow):
     """Main window for settings application."""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+        self.panels = [
+            appearance.AppearanceView(self),
+            terminal.Terminal(),
+            #about.AboutView(),
+            mouse_and_touchpad.MouseAndTouchpad(),
+            default_apps.DefaultApplicationsView(),
+        ]
 
         self.load_stack()
 
@@ -50,7 +53,7 @@ class MainWindow(Gtk.ApplicationWindow):
         list_box.set_css_classes(["navigation-sidebar"])
         list_box.connect("row-activated", self.on_list_box_row_activated)
 
-        for panel in PANELS:
+        for panel in self.panels:
             item = Gtk.ListBoxRow.new()
             item.set_name(panel.name)
 
@@ -84,7 +87,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
 
-        for panel in PANELS:
+        for panel in self.panels:
             self.stack.add_named(panel.widget, panel.name)
 
     def on_list_box_row_activated(self, _, row):
